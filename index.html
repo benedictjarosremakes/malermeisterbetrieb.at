@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mimm | Architektonische Oberflächen & Malerei</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500&family=Outfit:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            /* Colors */
+            --color-bg: #F4F4F2;
+            --color-surface: #EAEAE6;
+            --color-text: #1C1D21;
+            --color-text-muted: #6B6D76;
+            --color-accent: #298A92;
+            --color-accent-light: #34A8B2;
+            
+            --color-footer-bg: #151619;
+            --color-footer-text: #EAEAE6;
+            --color-footer-muted: #8E909B;
+
+            /* Typography */
+            --font-heading: 'Outfit', sans-serif;
+            --font-body: 'DM Sans', sans-serif;
+            
+            --text-xs: clamp(0.75rem, 1.5vw, 0.875rem);
+            --text-sm: clamp(0.875rem, 1.8vw, 1rem);
+            --text-base: clamp(1rem, 2vw, 1.125rem);
+            --text-lg: clamp(1.125rem, 2.5vw, 1.375rem);
+            --text-xl: clamp(1.375rem, 3vw, 1.75rem);
+            --text-2xl: clamp(1.75rem, 4vw, 2.5rem);
+            --text-3xl: clamp(2.25rem, 5vw, 3.5rem);
+            --text-4xl: clamp(3rem, 7vw, 5rem);
+
+            /* Spacing */
+            --space-1: 0.25rem;
+            --space-2: 0.5rem;
+            --space-3: 0.75rem;
+            --space-4: 1rem;
+            --space-6: 1.5rem;
+            --space-8: 2rem;
+            --space-12: 3rem;
+            --space-16: 4rem;
+            --space-24: 6rem;
+            --space-32: 8rem;
+            
+            --section-padding: clamp(4rem, 10vw, 8rem);
+            --container-padding: clamp(1.25rem, 5vw, 2.5rem);
+
+            /* Z-Index Stack */
+            --z-base: 0;
+            --z-raised: 10;
+            --z-dropdown: 100;
+            --z-sticky: 200;
+            --z-overlay: 500;
+            --z-modal: 1000;
+            --z-toast: 2000;
+            --z-max: 9000;
+        }
+
+        /* Reset & Base */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 100%;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            color: var(--color-text);
+        }
+
+        p {
+            margin-bottom: var(--space-4);
+        }
+
+        p:last-child {
+            margin-bottom: 0;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        ul, ol {
+            list-style: none;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        :focus-visible {
+            outline: 2px solid var(--color-accent);
+            outline-offset: 4px;
+        }
+
+        /* Utilities */
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 var(--container-padding);
+        }
+
+        .text-muted { color: var(--color-text-muted); }
+        .text-accent { color: var(--color-accent); }
+        
+        .caps-label {
+            font-family: var(--font-heading);
+            font-size: var(--text-xs);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 700;
+            color: var(--color-accent);
+            display: block;
+            margin-bottom: var(--space-4);
+        }
+
+        /* Icons */
+        [data-lucide] {
+            display: inline-block;
+            vertical-align: middle;
+            flex-shrink: 0;
+            line-height: 1;
+            pointer-events: none;
+            width: 20px;
+            height: 20px;
+            stroke-width: 1.5;
+            color: currentColor;
+        }
+
+        .icon-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45em;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.45em;
+            padding: 1rem 2rem;
+            font-family: var(--font-heading);
+            font-weight: 500;
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-radius: 0;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: var(--z-raised);
+        }
+
+        .btn-primary {
+            background-color: var(--color-accent);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--color-accent-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--color-text);
+            border: 1px solid var(--color-text);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--color-text);
+            color: var(--color-bg);
+        }
+
+        /* Skip Link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--color-accent);
+            color: white;
+            padding: 8px;
+            z-index: var(--z-max);
+            transition: top 0.2s;
+        }
+        .skip-link:focus {
+            top: 0;
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .reveal { opacity: 1; transform: none; transition: none; }
+        }
+
+        /* --------------------------------------------------------
+           HEADER & NAVIGATION (Strict Z-Index & Mobile Logic)
+           -------------------------------------------------------- */
+        .site-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background-color: rgba(244, 244, 242, 0.95);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(28, 29, 33, 0.05);
+            z-index: 1001; /* Literal number as requested */
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .site-header.scroll-up {
+            transform: translateY(0);
+        }
+        .site-header.scroll-down {
+            transform: translateY(-100%);
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .logo {
+            font-family: var(--font-heading);
+            font-size: var(--text-xl);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            color: var(--color-text);
+            text-transform: uppercase;
+        }
+
+        /* Desktop Nav */
+        .desktop-nav {
+            display: none;
+            align-items: center;
+            gap: var(--space-8);
+        }
+
+        .desktop-nav a {
+            font-family: var(--font-heading);
+            font-size: var(--text-sm);
+            font-weight: 500;
+            position: relative;
+        }
+
+        .desktop-nav a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: var(--color-accent);
+            transition: width 0.3s ease;
+        }
+
+        .desktop-nav a:hover::after {
+            width: 100%;
+        }
+
+        /* Hamburger Button */
+        .nav-toggle {
+            position: absolute;
+            right: var(--container-padding);
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1002; /* Literal number, highest */
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background-color: var(--color-text);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
+        }
+
+        .nav-toggle[aria-expanded="true"] span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+        .nav-toggle[aria-expanded="true"] span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .nav-toggle[aria-expanded="true"] span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* Mobile Overlay */
+        .mobile-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: var(--color-bg);
+            z-index: 1000; /* Literal number, below header */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .mobile-overlay.is-active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-nav-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: var(--space-6);
+        }
+
+        .mobile-nav-list a,
+        .mobile-nav-list button {
+            font-family: var(--font-heading);
+            font-size: var(--text-2xl);
+            font-weight: 500;
+            padding: 1rem 0;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            color: var(--color-text);
+        }
+
+        .mobile-overlay.is-active .mobile-nav-list a,
+        .mobile-overlay.is-active .mobile-nav-list button {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-overlay.is-active .mobile-nav-list li:nth-child(1) a { transition-delay: 0.1s; }
+        .mobile-overlay.is-active .mobile-nav-list li:nth-child(2) a { transition-delay: 0.15s; }
+        .mobile-overlay.is-active .mobile-nav-list li:nth-child(3) button { transition-delay: 0.2s; color: var(--color-accent); }
+
+        @media (min-width: 769px) {
+            .desktop-nav {
+                display: flex;
+            }
+            .nav-toggle {
+                display: none;
+                pointer-events: none;
+            }
+        }
+
+        /* --------------------------------------------------------
+           HERO SECTION
+           -------------------------------------------------------- */
+        .hero {
+            position: relative;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding-top: 80px; /* offset header */
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+        }
+
+        .hero-bg img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to right, rgba(28, 29, 33, 0.85) 0%, rgba(28, 29, 33, 0.4) 100%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            color: #fff;
+        }
+
+        .hero h1 {
+            color: #fff;
+            font-size: var(--text-4xl);
+            margin-bottom: var(--space-6);
+            text-wrap: balance;
+        }
+
+        .hero p {
+            font-size: var(--text-lg);
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: var(--space-8);
+            max-width: 600px;
+        }
+
+        /* --------------------------------------------------------
+           INTRO / ABOUT SECTION
+           -------------------------------------------------------- */
+        .section-intro {
+            padding: var(--section-padding) 0;
+            background-color: var(--color-bg);
+        }
+
+        .intro-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-12);
+            align-items: center;
+        }
+
+        .intro-text h2 {
+            font-size: var(--text-3xl);
+            margin-bottom: var(--space-6);
+        }
+
+        .intro-text p {
+            font-size: var(--text-lg);
+            color: var(--color-text-muted);
+        }
+
+        .intro-image {
+            position: relative;
+            height: 400px;
+            width: 100%;
+        }
+
+        .intro-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        @media (min-width: 768px) {
+            .intro-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: var(--space-16);
+            }
+            .intro-image {
+                height: 600px;
+            }
+        }
+
+        /* --------------------------------------------------------
+           SERVICES GRID
+           -------------------------------------------------------- */
+        .section-services {
+            padding: var(--section-padding) 0;
+            background-color: var(--color-surface);
+        }
+
+        .services-header {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto var(--space-16);
+        }
+
+        .services-header h2 {
+            font-size: var(--text-3xl);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1px;
+            background-color: rgba(28, 29, 33, 0.1);
+            border: 1px solid rgba(28, 29, 33, 0.1);
+        }
+
+        .service-card {
+            background-color: var(--color-surface);
+            padding: var(--space-12) var(--space-8);
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            background-color: var(--color-bg);
+        }
+
+        .service-card h3 {
+            font-size: var(--text-xl);
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .service-card h3 i {
+            color: var(--color-accent);
+            opacity: 0;
+            transform: translateX(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover h3 i {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .service-card p {
+            color: var(--color-text-muted);
+            font-size: var(--text-base);
+        }
+
+        @media (min-width: 640px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* --------------------------------------------------------
+           SPECIALTIES (Architectural Asymmetry)
+           -------------------------------------------------------- */
+        .section-specialties {
+            padding: var(--section-padding) 0;
+            background-color: var(--color-bg);
+            overflow: hidden;
+        }
+
+        .specialty-block {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: var(--space-16);
+        }
+
+        .specialty-block:last-child {
+            margin-bottom: 0;
+        }
+
+        .specialty-img-wrapper {
+            position: relative;
+            width: 100%;
+            height: 65vw;
+            min-height: 300px;
+        }
+
+        .specialty-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .specialty-content {
+            background: var(--color-surface);
+            padding: var(--space-8);
+            position: relative;
+            z-index: 2;
+            width: 90%;
+            margin: -3rem auto 0; /* Creates an architectural overlap on mobile */
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .specialty-content h2 {
+            font-size: var(--text-2xl);
+            margin-bottom: var(--space-4);
+        }
+
+        @media (min-width: 1024px) {
+            .specialty-block {
+                display: grid;
+                grid-template-columns: repeat(12, 1fr);
+                gap: 0;
+                align-items: center;
+                margin-bottom: var(--space-32);
+            }
+
+            .specialty-img-wrapper {
+                height: 600px;
+                width: 100%;
+            }
+
+            .specialty-content {
+                width: 100%;
+                margin: 0;
+                box-shadow: none;
+            }
+
+            /* Block 1: Image left, Text right overlapping */
+            .specialty-block:nth-child(1) .specialty-img-wrapper {
+                grid-column: 1 / 8;
+                grid-row: 1;
+            }
+            .specialty-block:nth-child(1) .specialty-content {
+                grid-column: 7 / 13;
+                grid-row: 1;
+                padding: var(--space-12);
+                margin-top: var(--space-16);
+            }
+
+            /* Block 2: Text left overlapping, Image right */
+            .specialty-block:nth-child(2) .specialty-img-wrapper {
+                grid-column: 6 / 13;
+                grid-row: 1;
+            }
+            .specialty-block:nth-child(2) .specialty-content {
+                grid-column: 1 / 7;
+                grid-row: 1;
+                padding: var(--space-12);
+                margin-top: calc(var(--space-16) * -1);
+            }
+        }
+
+        /* --------------------------------------------------------
+           FOOTER
+           -------------------------------------------------------- */
+        .site-footer {
+            background-color: var(--color-footer-bg);
+            color: var(--color-footer-text);
+            padding: clamp(4rem, 8vw, 7rem) 0 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-12);
+            margin-bottom: var(--space-16);
+        }
+
+        .footer-col h4 {
+            color: #fff;
+            font-size: var(--text-lg);
+            margin-bottom: var(--space-6);
+        }
+
+        .footer-brand .logo {
+            color: #fff;
+            margin-bottom: var(--space-4);
+            display: inline-block;
+        }
+
+        .footer-brand p {
+            color: var(--color-footer-muted);
+            max-width: 300px;
+            margin-bottom: var(--space-6);
+        }
+
+        .social-links {
+            display: flex;
+            gap: var(--space-4);
+        }
+
+        .social-links a {
+            color: var(--color-footer-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .social-links a:hover {
+            color: #fff;
+            border-color: var(--color-accent);
+            background-color: var(--color-accent);
+        }
+
+        .footer-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+
+        .footer-list li {
+            color: var(--color-footer-muted);
+        }
+
+        .footer-list button,
+        .footer-list a {
+            color: var(--color-footer-muted);
+            text-align: left;
+            padding: 0;
+            transition: color 0.2s ease;
+        }
+
+        .footer-list button:hover,
+        .footer-list a:hover {
+            color: #fff;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: var(--space-6);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            color: var(--color-footer-muted);
+            font-size: var(--text-sm);
+            text-align: center;
+        }
+
+        @media (min-width: 640px) {
+            .footer-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .footer-grid {
+                grid-template-columns: 2fr 1fr 1fr 1fr;
+            }
+            .footer-bottom {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+            }
+        }
+
+        /* --------------------------------------------------------
+           MODALS & POPUPS
+           -------------------------------------------------------- */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(21, 22, 25, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: var(--z-modal);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--container-padding);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.is-active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-card {
+            background-color: var(--color-bg);
+            width: 100%;
+            max-width: 480px;
+            padding: var(--space-12) var(--space-8);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.is-active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: var(--space-4);
+            right: var(--space-4);
+            color: var(--color-text-muted);
+            padding: 0.5rem;
+            transition: color 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: var(--color-accent);
+        }
+
+        .modal-title {
+            font-size: var(--text-2xl);
+            margin-bottom: var(--space-4);
+        }
+
+        .modal-body {
+            color: var(--color-text-muted);
+            margin-bottom: var(--space-8);
+        }
+
+        .modal-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+
+        .modal-links a {
+            color: var(--color-accent);
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45em;
+        }
+        
+        .modal-links a:hover {
+            text-decoration: underline;
+        }
+
+        /* --------------------------------------------------------
+           COOKIE BANNER
+           -------------------------------------------------------- */
+        .cookie-banner {
+            position: fixed;
+            bottom: var(--space-4);
+            left: var(--space-4);
+            right: var(--space-4);
+            background-color: var(--color-surface);
+            padding: var(--space-6);
+            border: 1px solid rgba(28, 29, 33, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            z-index: var(--z-toast);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+            transform: translateY(150%);
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .cookie-banner.is-visible {
+            transform: translateY(0);
+        }
+
+        .cookie-text {
+            font-size: var(--text-sm);
+            color: var(--color-text-muted);
+        }
+
+        .cookie-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+        }
+
+        .cookie-actions button {
+            padding: 0.5rem 1rem;
+            font-size: var(--text-xs);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: 1px solid var(--color-text);
+            transition: all 0.2s ease;
+        }
+
+        .cookie-btn-accept {
+            background-color: var(--color-text);
+            color: var(--color-bg);
+        }
+
+        .cookie-btn-accept:hover {
+            background-color: var(--color-accent);
+            border-color: var(--color-accent);
+            color: #fff;
+        }
+
+        .cookie-btn-decline {
+            background-color: transparent;
+            color: var(--color-text);
+        }
+
+        .cookie-btn-decline:hover {
+            background-color: rgba(28, 29, 33, 0.05);
+        }
+
+        @media (min-width: 768px) {
+            .cookie-banner {
+                max-width: 450px;
+                left: var(--space-8);
+                bottom: var(--space-8);
+                right: auto;
+            }
+        }
+
+    </style>
+</head>
+<body>
+<!-- DEMO NOTICE BANNER - benedictjaros.com -->
+<style>
+#__demo_spacer{display:block;}
+#__demo_notice,#__demo_notice *{box-sizing:border-box;margin:0;padding:0;}
+#__demo_notice{
+  position:fixed;top:0;left:0;right:0;z-index:99999;
+  background:rgba(9,9,11,.97);
+  backdrop-filter:blur(14px) saturate(160%);
+  -webkit-backdrop-filter:blur(14px) saturate(160%);
+  border-bottom:1px solid rgba(255,255,255,.07);
+  font-family:system-ui,-apple-system,'Segoe UI',Helvetica,Arial,sans-serif;
+}
+#__demo_inner{
+  max-width:1280px;margin:0 auto;
+  padding:0 44px 0 18px;min-height:38px;
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+}
+#__demo_dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:#f5c842;box-shadow:0 0 7px rgba(245,200,66,.55);}
+#__demo_label{color:#f5c842;font-weight:700;font-size:10px;letter-spacing:.12em;text-transform:uppercase;flex-shrink:0;}
+#__demo_divider{color:rgba(255,255,255,.15);font-size:12px;flex-shrink:0;}
+#__demo_text{color:rgba(255,255,255,.45);font-size:11.5px;line-height:1.45;flex:1 1 160px;}
+#__demo_links{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+#__demo_links a{
+  color:rgba(255,255,255,.38);font-size:11px;text-decoration:none;
+  border-bottom:1px solid rgba(255,255,255,.14);
+  transition:color .15s,border-color .15s;white-space:nowrap;
+}
+#__demo_links a:hover{color:rgba(255,255,255,.75);border-color:rgba(255,255,255,.4);}
+#__demo_link_sep{color:rgba(255,255,255,.15);font-size:10px;}
+#__demo_close{
+  position:absolute;right:0;top:0;bottom:0;width:40px;
+  background:none;border:none;cursor:pointer;
+  color:rgba(255,255,255,.28);font-size:16px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  transition:color .15s;
+}
+#__demo_close:hover{color:rgba(255,255,255,.7);}
+@media(max-width:560px){
+  #__demo_inner{padding:7px 44px 7px 14px;gap:6px;}
+  #__demo_text{font-size:11px;flex:1 1 100%;order:3;}
+  #__demo_dot,#__demo_label{order:1;}
+  #__demo_divider{order:2;}
+  #__demo_links{order:4;}
+}
+</style>
+<div id="__demo_spacer"></div>
+<div id="__demo_notice" role="banner" aria-label="Demo notice">
+  <div id="__demo_inner">
+    <span id="__demo_dot"></span>
+    <span id="__demo_label">Demo</span>
+    <span id="__demo_divider">/</span>
+    <span id="__demo_text">Unofficial remake &mdash; not the real website. All content &amp; trademarks belong to their owners.</span>
+    <div id="__demo_links">
+      <a href="https://benedictjaros.com/impressum" target="_blank" rel="noopener noreferrer">Impressum</a>
+      <span id="__demo_link_sep">&middot;</span>
+      <a href="https://benedictjaros.com/datenschutz" target="_blank" rel="noopener noreferrer">Datenschutz</a>
+    </div>
+  </div>
+  <button id="__demo_close" aria-label="Close demo notice">&#x2715;</button>
+</div>
+<script>
+(function () {
+  var spacer = document.getElementById('__demo_spacer');
+  var b = document.getElementById('__demo_notice');
+  var x = document.getElementById('__demo_close');
+  if (!b || !spacer) return;
+  function sync() { spacer.style.height = b.offsetHeight + 'px'; }
+  function hide() {
+    b.style.display = 'none'; spacer.style.height = '0';
+    try { sessionStorage.setItem('__demo_closed', '1'); } catch (e) {}
+  }
+  try { if (sessionStorage.getItem('__demo_closed')) { b.style.display = 'none'; spacer.style.height = '0'; return; } } catch (e) {}
+  sync();
+  window.addEventListener('resize', function () { if (b.style.display !== 'none') sync(); });
+  if (x) x.addEventListener('click', hide);
+}());
+</script>
+
+
+    <a href="#main" class="skip-link">Zum Hauptinhalt springen</a>
+
+    <!-- Header -->
+    <header class="site-header" id="header">
+        <div class="container header-inner">
+            <a href="#" class="logo" aria-label="Mimm Startseite">Mimm</a>
+            
+            <nav class="desktop-nav" aria-label="Hauptnavigation">
+                <a href="#leistungen">Leistungen</a>
+                <a href="#spezialitaeten">Spezialitäten</a>
+                <button class="btn btn-primary trigger-modal" data-modal="contact-modal">
+                    Kontakt <i data-lucide="arrow-right"></i>
+                </button>
+            </nav>
+
+            <button class="nav-toggle" aria-expanded="false" aria-label="Menü öffnen" aria-controls="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Overlay -->
+    <div class="mobile-overlay" id="mobile-menu" aria-hidden="true">
+        <nav aria-label="Mobile Navigation">
+            <ul class="mobile-nav-list">
+                <li><a href="#leistungen" class="mobile-link">Leistungen</a></li>
+                <li><a href="#spezialitaeten" class="mobile-link">Spezialitäten</a></li>
+                <li><button class="mobile-link trigger-modal" data-modal="contact-modal">Kontakt</button></li>
+            </ul>
+        </nav>
+    </div>
+
+    <main id="main">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-bg">
+                <img src="https://www.malermeisterbetrieb.at/uploads/PLIXUT5m/727x0_2560x0/5.jpg" alt="Modernes fugenloses Badezimmer" fetchpriority="high">
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="container">
+                <div class="hero-content reveal">
+                    <span class="caps-label" style="color: #fff; opacity: 0.8;">Architektonische Oberflächen</span>
+                    <h1>Ihr Maler aus Innsbruck mit Blick für das Detail</h1>
+                    <p>Professionelle Malerarbeiten, fugenlose Bäder und Designerbodenbeschichtungen in Tirol.</p>
+                    <button class="btn btn-primary trigger-modal" data-modal="contact-modal">
+                        Projekt anfragen <i data-lucide="arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Intro Section -->
+        <section class="section-intro" id="philosophie">
+            <div class="container">
+                <div class="intro-grid">
+                    <div class="intro-text reveal">
+                        <span class="caps-label">Philosophie</span>
+                        <h2>Ein frischer Anstrich für individuelle Wünsche.</h2>
+                        <p>Ob Fassade oder Wände: Unser Team arbeitet hochmotiviert, termintreu, sauber und äußerst kreativ. Höchste Ansprüche und modernste Standards für private und öffentliche Kunden.</p>
+                        <p>Wir verwandeln Räume in architektonische Erlebnisse – mit Präzision und einem kompromisslosen Fokus auf Qualität.</p>
+                    </div>
+                    <div class="intro-image reveal" style="--i:1">
+                        <img src="https://www.malermeisterbetrieb.at/uploads/nOkPCNMu/727x0_2560x0/2.jpg" alt="Hochwertige Innenraumgestaltung" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Section -->
+        <section class="section-services" id="leistungen">
+            <div class="container">
+                <div class="services-header reveal">
+                    <span class="caps-label">Expertise</span>
+                    <h2>Klassisches Handwerk, modern interpretiert.</h2>
+                </div>
+                
+                <div class="services-grid reveal" style="--i:1">
+                    <article class="service-card">
+                        <h3>Malerei <i data-lucide="arrow-up-right"></i></h3>
+                        <p>Präzise Wandgestaltungen für ein perfektes Raumklima und ästhetische Tiefe in jedem Interieur.</p>
+                    </article>
+                    <article class="service-card">
+                        <h3>Anstriche <i data-lucide="arrow-up-right"></i></h3>
+                        <p>Hochwertige Schutz- und Dekorationsanstriche für Holz, Metall und architektonische Elemente.</p>
+                    </article>
+                    <article class="service-card">
+                        <h3>Struktur <i data-lucide="arrow-up-right"></i></h3>
+                        <p>Spezielle Spachtel- und Putztechniken für haptische Oberflächen und individuelle Charakteristik.</p>
+                    </article>
+                    <article class="service-card">
+                        <h3>Fassade <i data-lucide="arrow-up-right"></i></h3>
+                        <p>Langlebiger Witterungsschutz kombiniert mit zeitgemäßer architektonischer Farbgebung.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Specialties Section -->
+        <section class="section-specialties" id="spezialitaeten">
+            <div class="container">
+                
+                <!-- Specialty 1 -->
+                <div class="specialty-block reveal">
+                    <div class="specialty-img-wrapper">
+                        <img src="https://www.malermeisterbetrieb.at/uploads/MS8AbP7W/727x0_2560x0/1.jpg" alt="Fugenloses Badezimmer Design" loading="lazy">
+                    </div>
+                    <div class="specialty-content">
+                        <span class="caps-label">Spezialität</span>
+                        <h2>Fugenlose Bäder & Böden</h2>
+                        <p>Ästhetische, formschöne Alternativen zu herkömmlichen Fliesen durch modernste Epoxidharzbeschichtungen. Überzeugend in Funktionalität, Hygiene und minimalistischem Design.</p>
+                    </div>
+                </div>
+
+                <!-- Specialty 2 -->
+                <div class="specialty-block reveal">
+                    <div class="specialty-img-wrapper">
+                        <img src="https://www.malermeisterbetrieb.at/uploads/BUf866tF/697x0_640x0/1145771_eb.jpg" alt="Designerbodenbeschichtung in Marmoroptik" loading="lazy">
+                    </div>
+                    <div class="specialty-content">
+                        <span class="caps-label">Spezialität</span>
+                        <h2>Designerboden&shy;beschichtungen</h2>
+                        <p>Natursteinoptik oder Marmorierungseffekt – rutschhemmend, fugenlos und stoßfest für Neubau und Sanierung. Die perfekte Basis für repräsentative Räume.</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-brand">
+                    <span class="logo">Mimm</span>
+                    <p>Ihr Maler aus Innsbruck mit Blick für das Detail. Architektonische Oberflächen für höchste Ansprüche.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Instagram"><i data-lucide="instagram"></i></a>
+                        <a href="#" aria-label="Facebook"><i data-lucide="facebook"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-col">
+                    <h4>Kontakt</h4>
+                    <ul class="footer-list">
+                        <li>
+                            <span class="icon-text"><i data-lucide="phone"></i> +43 512 259000</span>
+                        </li>
+                        <li>
+                            <span class="icon-text"><i data-lucide="mail"></i> info@malermeisterbetrieb.at</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Öffnungszeiten</h4>
+                    <ul class="footer-list">
+                        <li>Mo - Do: 07:00 - 17:00</li>
+                        <li>Fr: 07:00 - 12:00</li>
+                        <li>Sa - So: Geschlossen</li>
+                    </ul>
+                </div>
+
+                <div class="footer-col">
+                    <h4>Rechtliches</h4>
+                    <ul class="footer-list">
+                        <li><button class="trigger-modal" data-modal="legal-modal">Impressum</button></li>
+                        <li><button class="trigger-modal" data-modal="legal-modal">Datenschutz</button></li>
+                        <li><button class="trigger-modal" data-modal="legal-modal">AGB</button></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2026 Malerbetrieb Mimm — All original content, images & trademarks are property of their respective owners. Website rebuilt by Benedict Jaros.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modals -->
+    
+    <!-- Contact Placeholder Modal -->
+    <div class="modal-overlay" id="contact-modal" role="dialog" aria-modal="true" aria-labelledby="contact-title">
+        <div class="modal-card">
+            <button class="modal-close" aria-label="Schließen" data-close><i data-lucide="x"></i></button>
+            <h2 id="contact-title" class="modal-title">Kontaktanfrage</h2>
+            <div class="modal-body">
+                <p>This feature will be live once the website is launched and configured. Contact us in the meantime — we'd love to hear from you.</p>
+            </div>
+            <button class="btn btn-primary" data-close>Verstanden</button>
+        </div>
+    </div>
+
+    <!-- Legal Demo Notice Modal -->
+    <div class="modal-overlay" id="legal-modal" role="dialog" aria-modal="true" aria-labelledby="legal-title">
+        <div class="modal-card">
+            <button class="modal-close" aria-label="Schließen" data-close><i data-lucide="x"></i></button>
+            <h2 id="legal-title" class="modal-title">Rechtliche Hinweise</h2>
+            <div class="modal-body">
+                <p>Diese Website ist ein Demo-Remake und wurde nicht von oder für das Unternehmen erstellt. Die Inhalte dienen ausschließlich Demonstrationszwecken. Für unsere eigenen rechtlichen Informationen:</p>
+                <div class="modal-links">
+                    <a href="https://benedictjaros.com/impressum" target="_blank" rel="noopener">Impressum <i data-lucide="external-link"></i></a>
+                    <a href="https://benedictjaros.com/datenschutz" target="_blank" rel="noopener">Datenschutz <i data-lucide="external-link"></i></a>
+                </div>
+            </div>
+            <button class="btn btn-secondary" data-close>Schließen</button>
+        </div>
+    </div>
+
+    <!-- Cookie Banner -->
+    <div class="cookie-banner" id="cookie-banner" role="region" aria-label="Cookie Banner">
+        <p class="cookie-text">Wir verwenden Cookies, um Ihre Erfahrung zu verbessern. Sie können Ihre Einstellungen jederzeit anpassen.</p>
+        <div class="cookie-actions">
+            <button class="cookie-btn-accept" id="cookie-accept">Akzeptieren</button>
+            <button class="cookie-btn-decline" id="cookie-decline">Ablehnen</button>
+            <button class="cookie-btn-decline trigger-modal" data-modal="legal-modal">Einstellungen</button>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+        // Initialize Icons
+        lucide.createIcons();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Header Scroll Logic ---
+            const header = document.getElementById('header');
+            let lastScroll = 0;
+            
+            window.addEventListener('scroll', () => {
+                const currentScroll = window.pageYOffset;
+                if (currentScroll <= 0) {
+                    header.classList.remove('scroll-up');
+                    return;
+                }
+                if (currentScroll > lastScroll && !header.classList.contains('scroll-down')) {
+                    header.classList.remove('scroll-up');
+                    header.classList.add('scroll-down');
+                } else if (currentScroll < lastScroll && header.classList.contains('scroll-down')) {
+                    header.classList.remove('scroll-down');
+                    header.classList.add('scroll-up');
+                }
+                lastScroll = currentScroll;
+            }, { passive: true });
+
+            // --- Mobile Navigation ---
+            const navToggle = document.querySelector('.nav-toggle');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            
+            function toggleMenu() {
+                const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+                navToggle.setAttribute('aria-expanded', !isExpanded);
+                mobileMenu.classList.toggle('is-active');
+                mobileMenu.setAttribute('aria-hidden', isExpanded);
+                document.body.style.overflow = isExpanded ? '' : 'hidden';
+            }
+
+            navToggle.addEventListener('click', toggleMenu);
+
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (mobileMenu.classList.contains('is-active')) {
+                        toggleMenu();
+                    }
+                });
+            });
+
+            // --- Scroll Reveal ---
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            const revealObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                root: null,
+                threshold: 0.12,
+                rootMargin: "0px 0px -50px 0px"
+            });
+
+            revealElements.forEach(el => revealObserver.observe(el));
+
+            // --- Modal Logic ---
+            const modalTriggers = document.querySelectorAll('.trigger-modal');
+            const closeButtons = document.querySelectorAll('[data-close]');
+            const modals = document.querySelectorAll('.modal-overlay');
+
+            function openModal(modalId) {
+                const modal = document.getElementById(modalId);
+                if (modal) {
+                    modal.classList.add('is-active');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeAllModals() {
+                modals.forEach(modal => {
+                    modal.classList.remove('is-active');
+                });
+                // Only restore scroll if mobile menu isn't open
+                if (!mobileMenu.classList.contains('is-active')) {
+                    document.body.style.overflow = '';
+                }
+            }
+
+            modalTriggers.forEach(trigger => {
+                trigger.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const modalId = trigger.getAttribute('data-modal');
+                    openModal(modalId);
+                });
+            });
+
+            closeButtons.forEach(btn => {
+                btn.addEventListener('click', closeAllModals);
+            });
+
+            modals.forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        closeAllModals();
+                    }
+                });
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeAllModals();
+                    if (mobileMenu.classList.contains('is-active')) {
+                        toggleMenu();
+                    }
+                }
+            });
+
+            // --- Cookie Banner ---
+            const cookieBanner = document.getElementById('cookie-banner');
+            const btnAccept = document.getElementById('cookie-accept');
+            const btnDecline = document.getElementById('cookie-decline');
+            const consentKey = 'cookie_consent';
+
+            if (!localStorage.getItem(consentKey)) {
+                // Small delay for better UX
+                setTimeout(() => {
+                    cookieBanner.classList.add('is-visible');
+                }, 1000);
+            }
+
+            function handleConsent(choice) {
+                localStorage.setItem(consentKey, choice);
+                cookieBanner.classList.remove('is-visible');
+            }
+
+            btnAccept.addEventListener('click', () => handleConsent('accepted'));
+            btnDecline.addEventListener('click', () => handleConsent('declined'));
+        });
+    </script>
+</body>
+</html>
